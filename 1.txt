@@ -125,11 +125,16 @@ WHERE BOOK_ID='3';
 
 4.
 
-CREATE TABLE BOOKPART
+{{{{CREATE TABLE BOOKPART
 PARTITION BY RANGE (PUB_YEAR)
 (PARTITION P1 VALUES LESS THAN(2016),
 PARTITION P2 VALUES LESS THAN (MAXVALUE))
-AS SELECT * FROM BOOK;
+AS SELECT * FROM BOOK;}}}}}
+
+
+
+create view year as select pub_year from book;
+select * from year;
 
 5.
 
@@ -143,11 +148,18 @@ Grant succeeded.
 SQL> connect b3/b3
 Connected.
 
-CREATE VIEW BC AS SELECT B.BOOK_ID,C.TITLE,B.BRANCH_ID,
+
+{{{####CREATE VIEW BC AS SELECT B.BOOK_ID,C.TITLE,B.BRANCH_ID,
 (B.NO_OF_COPIES-(SELECT COUNT(*) FROM BOOK_LENDING WHERE
 B.BOOK_ID=BOOK_ID AND B.BRANCH_ID=BRANCH_ID)) AS NO_COPY
 FROM BOOK_COPIES B,BOOK C
 WHERE B.BOOK_ID=C.BOOK_ID;
+####}}}}}}
 
+create view all_books as
+ select b.book_id,b.title,c.no_of_copies,l.branch_name
+ from book b , book_copies c, library_branch l
+ where b.book_id =c.book_id and l.branch_id = c.branch_id;
 
+select * from all_books;
 
